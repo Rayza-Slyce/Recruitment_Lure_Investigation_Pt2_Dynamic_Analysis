@@ -52,7 +52,7 @@ The aim of this document is to convince the user they have opened a legitimate d
 I noticed a .mkv file i had earlier dismissed as a likely just a decoy video, turned out to be a RAR file that began launching multiple .dll
 
 
-![Files Executing in Background](Images/18_zhen_mkv.png)
+![Files Executing in Background](Images/zhen_mkv.png)
 
 
 The process ended with a file named MpEng.exe, which at first glance looked like Microsoft Defender, but the company name of Python Software Foundation made it clear that wasn't the case.
@@ -130,7 +130,7 @@ It’s there to slow analysis down, not to protect anything.
 
 ## TAIWAN.pdf 
 
-![TAIWAN archive prompting for password](Images/34_taiwan_contents.png)
+![TAIWAN archive prompting for password](Images/Taiwan_contents.png)
 
 Despite the name, this isn’t a PDF. It’s a password-protected archive.
 
