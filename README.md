@@ -187,24 +187,37 @@ No clearly malicious outbound traffic was observed during the analysis window. T
 
 ```mermaid
 flowchart TD
-    A[User executes lure EXE]
-    A --> B[Decoy document opens]
-    A --> C[Deju batch script runs]
+    subgraph S1[Initial execution]
+        A[User executes lure EXE]
+        B[Decoy document opens]
+        C[Deju batch script runs]
+        A --> B
+        A --> C
+    end
 
-    C --> D[zhen.mkv (WinRAR CLI) extracts archive]
-    D --> E[TAIWAN.pdf unlocked using embedded password]
+    subgraph S2[Staging]
+        D[zhen.mkv used as WinRAR CLI]
+        E[TAIWAN.pdf unlocked using embedded password]
+        F[Payload files written to WindowsApps path]
+        C --> D --> E --> F
+    end
 
-    E --> F[Payload files written to WindowsApps path]
-    F --> G[Scheduled task created (persistence)]
+    subgraph S3[Persistence]
+        G[Scheduled task created for persistence]
+        F --> G
+    end
 
-    G --> H[conhost.exe launches next stage]
-    H --> I[MpEng.exe process starts]
+    subgraph S4[Execution]
+        H[conhost.exe launches next stage]
+        I[MpEng.exe process starts]
+        J[MpEng.exe is a disguised Python runtime]
+        K[Python modules loaded]
+        L[Further payload logic available]
+        G --> H --> I --> J --> K --> L
+    end
 
-    I --> J[MpEng.exe is disguised Python runtime]
-    J --> K[Python modules (.pyd) loaded]
-    K --> L[Further payload logic available]
-
-    L --> M[System left with persistent execution capability]
+    M[System left with persistent execution capability]
+    L --> M
 ```
 
 ---
