@@ -165,6 +165,11 @@ Looks like it’s checking for things as it builds out the next stage.
 
 ---
 
+## Persistence 
+
+After seeing that Deju had created a "WindowsUpdate" scheduled task, I checked Task Scheduler and confirmed that the created task is designed to re-run every 10 minutes indefinitely.
+**The system is now persistently compromised at user level**
+
 ## Network Activity
 
 ![Burp showing no clearly malicious outbound traffic](Images/37_no_significant_traffic.png)
