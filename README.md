@@ -194,9 +194,13 @@ This confirms that the scheduled task is responsible for maintaining persistent,
 
 ---
 
-## Network Activity
+## Network Activity (observed)
 
-No clearly malicious outbound traffic was observed during execution process.
+No clearly malicious outbound traffic was observed during the execution process.
+
+The limited network activity captured appears to be standard Windows behaviour, including SmartScreen and system trust checks against Microsoft domains (e.g. `checkappexec.microsoft.com`, `ctldl.windowsupdate.com`) triggered when executing an unknown file.
+
+No direct command-and-control or suspicious outbound connections attributable to the payload were identified during the analysis window.
 
 ![Burp showing no clearly malicious outbound traffic](Images/37_no_significant_traffic.png)
 
