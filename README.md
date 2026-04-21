@@ -49,18 +49,19 @@ When the file is executed, a document opens straight away:
 
 The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background...
 
-While the process was running I noticed a .mkv file I had earlier dismissed as a likely just a decoy video, it turned out to be a RAR file that began launching multiple .dll's.
+While the process was running I noticed `zhen.mkv`, a file I had seen earlier but, at that point, I had assumed was just a decoy video file based on the extension.  
+However, it turned out to be a RAR archive, and once executed it began triggering the loading of multiple DLLs in the background.
 
 
 ![Files Executing in Background](Images/zhen_mkv.png)
 
 
-The process ended with a file named MpEng.exe, which at first glance looked like Microsoft Defender, but the company name of Python Software Foundation made it clear that wasn't the case. It
+The process ended with a file named MpEng.exe, which at first glance looked like Microsoft Defender, but the company name of Python Software Foundation made it clear that wasn't the case. 
 
 
 ![Initial Process Explorer view after execution](Images/16_procexp_after_exe_2026-04-20_00-20.png)
 
-It was running python script.
+It became clear this process wasn’t actually Defender at all, but a Python-based runtime executing scripts in the background.
 
 ---
 
@@ -73,9 +74,7 @@ I went back to the extracted files and noticed something I’d missed earlier. T
 
 ![Files inside hidden underscore folder](Images/30_payload_hidden_components_in_underscore_folder.png)
 
-I'd already seen that zhen.mkv was actually a RAR, these files weren't random. 
-
-They turned out to be the main part of the payload.
+I’d already seen that `zhen.mkv` wasn’t what it appeared to be, so finding these files grouped together made it clear they weren’t random decoys, they were part of the actual execution chain.
 
 ---
 
@@ -125,7 +124,9 @@ It:
 - includes the password  
 - writes files into a user directory  
 - sets up persistence  
-- runs the next stage  
+- runs the next stage
+
+This ties everything together, Deju isn’t just another file in the archive, it’s the component orchestrating the entire execution flow.
 
 ---
 
@@ -145,7 +146,7 @@ Those files were:
 
 ---
 
-MpEng appears to be the actual payload, masquerading as Windows Defender but running python.
+At this point, `MpEng.exe` appears to be the actual payload, masquerading as Windows Defender while running a Python-based environment.
 
 ![Fake Defender Python runtime in Process Explorer](Images/38_fake_defender_python_runtime.png)
 
@@ -161,13 +162,13 @@ Activity is happening in:
 
 Lots of file access attempts and `NAME NOT FOUND`.
 
-Looks like it’s checking for things as it builds out the next stage.
+This behaviour suggests the payload is attempting to locate or prepare its execution environment before fully committing to the next stage.
 
 ---
 
 ## Persistence 
 
-After seeing that Deju had created a "WindowsUpdate" scheduled task, I checked Task Scheduler and confirmed that the created task is designed to re-run every 10 minutes indefinitely.
+After seeing that Deju had created a "WindowsUpdate" scheduled task, I checked Task Scheduler Library and confirmed that the created task is designed to run 'WindowsUpdate.bat' every 10 minutes indefinitely.
 
 **The system is now persistently compromised at user level**
 
@@ -224,11 +225,9 @@ flowchart TD
 
 ## What This Likely Is
 
-This looks like:
+This appears to be a **multi-stage loader/backdoor setup**, rather than a standalone payload.
 
-A **multi-stage loader/backdoor setup**
-
-Not just one payload,more like a setup for whatever comes next.
+The structure suggests the goal is to establish persistence and prepare the system for further activity, rather than carry out an immediate, visible action.
 
 ---
 
@@ -250,9 +249,14 @@ This turned out to be quite sophisticated.
 
 I initially thought it was something relatively straightforward, but it turned out to be much more layered once I actually ran it.
 
-Working through it step by step helped me move from guessing based on file names to actually seeing how it fits together.
+Based on the behaviour observed, this payload appears to function as a staged loader rather than a standalone attack.
 
-Still learning, but this one definitely helped things click.
+The use of disguised files, controlled extraction, and scheduled task persistence suggests it is designed to maintain access and enable further execution over time.
+
+While no clear command-and-control traffic was observed during the analysis window, this may be due to delayed execution, environmental awareness, or network behaviour not captured by the proxy.
+
+Even without immediate visible impact, this represents a meaningful compromise of the system.
+
 
 ---
 
