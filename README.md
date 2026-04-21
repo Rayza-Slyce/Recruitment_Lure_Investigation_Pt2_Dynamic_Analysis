@@ -37,69 +37,47 @@ To get a clearer picture, I moved into a lab and looked at what actually happens
 - Burp Suite  
 - A Windows 10 VM ("CannonFodder")  
 
-This is where things started to make more sense.
-
 ---
 
 ## Initial Execution – First Impressions
 
 When the file is executed, a document opens straight away:
 
+
 ![Decoy document opened on execution](Images/14_notepad_after_exe.png)
 
-That helps explain how a normal user could think nothing suspicious has happened.
 
-At the same time, there’s some short-lived activity in the background:
+The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background...
+
+I noticed a .mkv file i had earlier dismissed as a likely just a decoy video, turned out to be a RAR file that began launching multiple .dll
+
+
+![Files Executing in Background](Images/18_zhen_mkv.png)
+
+
+The process ended with a file named MpEng.exe, which at first glance looked like Microsoft Defender, but the company name of Python Software Foundation made it clear that wasn't the case.
+
 
 ![Initial Process Explorer view after execution](Images/16_procexp_after_exe_2026-04-20_00-20.png)
 
-At this stage, it just looked busy rather than obviously malicious.
-
 ---
 
-## Getting Useful Output (After a Bit of Trial and Error)
+## Going Back to the Files
 
-My first few Procmon runs weren’t great. Either too much noise, or I filtered too much and saw nothing.
+I went back to the extracted files and noticed something I’d missed earlier. The files I thought were just decoys in my earlier investigation were hidden in a `_` folder:
 
-Eventually I landed on something more usable:
-
-![Procmon filter configuration](Images/15_procmon_filter.png)
-
-Instead of trying to see everything, I focused on:
-
-- what processes were created  
-- where files were written  
-- what happened after the decoy opened  
-
-That made it much easier to follow.
-
----
-
-## Going Back to the Files – Finding What I Missed
-
-After that, I went back to the extracted files and noticed something I’d missed earlier.
-
-There was a `_` folder:
 
 ![Archive structure showing hidden underscore folder](Images/29_payload_subfolder_structure.png)
 
-Inside it:
-
 ![Files inside hidden underscore folder](Images/30_payload_hidden_components_in_underscore_folder.png)
 
-Including:
-
-- `Deju`  
-- `TAIWAN.pdf`  
-- `zhen.mkv`  
-
-At first, these just looked like random extras.
+I'd already seen that zhen.mkv was actually a RAR, these files weren't random. 
 
 They turned out to be the main part of the payload.
 
 ---
 
-## File Types – Where Things Started to Click
+## File Types
 
 Checking the real file types changed everything:
 
@@ -113,7 +91,7 @@ This is where it stopped looking simple.
 
 ---
 
-## zhen.mkv – Not What It Looks Like
+## zhen.mkv 
 
 ![PE structure of zhen.mkv](Images/32_zhen_mkv_pe_structure.png)
 
@@ -123,11 +101,11 @@ So not the payload itself, but something used to unpack it.
 
 ---
 
-## Deju – The Key Piece
+## Deju 
 
 ![Deju batch script content](Images/33_sed_Deju.png)
 
-This file explains most of what’s going on.
+This file is a key component in delivering the payload.
 
 It:
 
@@ -150,7 +128,7 @@ It’s there to slow analysis down, not to protect anything.
 
 ---
 
-## TAIWAN.pdf – The Real Payload Container
+## TAIWAN.pdf 
 
 ![TAIWAN archive prompting for password](Images/34_taiwan_contents.png)
 
@@ -158,17 +136,16 @@ Despite the name, this isn’t a PDF. It’s a password-protected archive.
 
 Once unpacked, it contains a large number of files rather than one obvious payload.
 
----
+![1876 files](Images/1876_files.png)
 
-## What’s Inside – Python Environment
-
-Instead of one script, it contains:
+Those files were:
 
 - a full Python environment  
 - standard libraries  
 - compiled modules  
+- and, MpEng.exe
 
-So the malware brings its own runtime with it.
+![TAIWAN contents](Taiwan_contents.png)
 
 ---
 
@@ -216,18 +193,6 @@ That could mean:
 
 ---
 
-## VirusTotal – Backing It Up
-
-![VirusTotal process tree](Images/23_vt_process_tree_rundll32_chain.png)
-
-![VirusTotal bundled files showing masquerading](Images/24_vt_bundled_files_masquerade.png)
-
-![VirusTotal dropped files view](Images/25_vt_dropped_files_stage2_payload.png)
-
-This lines up with what I was seeing locally.
-
----
-
 ## Execution Flow
 
 ```mermaid
@@ -264,20 +229,6 @@ Not just one payload — more like a setup for whatever comes next.
 
 ---
 
-## Could It Be a Botnet?
-
-Possibly.
-
-It has:
-
-- persistence  
-- execution capability  
-- modular structure  
-
-But I didn’t see actual command traffic, so can’t confirm that.
-
----
-
 ## Level of Impact
 
 If this ran on a real system:
@@ -286,7 +237,7 @@ If this ran on a real system:
 - can run more code later  
 - possible data access or further compromise  
 
-It’s quiet, not destructive — but that’s the point.
+It’s quiet, not destructive, but that’s the point.
 
 ---
 
