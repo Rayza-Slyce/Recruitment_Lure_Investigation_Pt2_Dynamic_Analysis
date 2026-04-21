@@ -172,15 +172,18 @@ After seeing that Deju had created a "WindowsUpdate" scheduled task, I checked T
 
 **The system is now persistently compromised at user level**
 
-![Persistence](Images/Persistence.png)
+![Persistence](Images/persistence.png)
 
 ---
 
 ## Network Activity
 
+No clearly malicious outbound traffic was observed during execution process.
+
 ![Burp showing no clearly malicious outbound traffic](Images/37_no_significant_traffic.png)
 
-No clearly malicious outbound traffic was observed during the analysis window. This may indicate delayed execution, environmental awareness, or use of network mechanisms not captured by the proxy.
+I monitored traffic during the scheduled 'WindowsUpdate.bat' tasks and again, none was observed.
+This suggests that the payload is only operating locally at this point or is using network mechanisms not captured by the proxy.
 
 ---
 
