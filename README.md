@@ -168,7 +168,12 @@ Looks like it’s checking for things as it builds out the next stage.
 ## Persistence 
 
 After seeing that Deju had created a "WindowsUpdate" scheduled task, I checked Task Scheduler and confirmed that the created task is designed to re-run every 10 minutes indefinitely.
+
 **The system is now persistently compromised at user level**
+
+![Persistence](Images/Persistence.png)
+
+---
 
 ## Network Activity
 
@@ -206,7 +211,7 @@ flowchart TD
 
 ## What This Likely Is
 
-Best way I can describe it:
+This looks like:
 
 A **multi-stage loader/backdoor setup**
 
@@ -228,9 +233,9 @@ It’s quiet, not destructive, but that’s the point.
 
 ## Final Thoughts
 
-This didn’t go how I expected.
+This turned out to be quite sophisticated.
 
-I thought it was something simple, and it turned out to be much more layered once I actually ran it.
+I initially thought it was something relatively straightforward, but it turned out to be much more layered once I actually ran it.
 
 Working through it step by step helped me move from guessing based on file names to actually seeing how it fits together.
 
