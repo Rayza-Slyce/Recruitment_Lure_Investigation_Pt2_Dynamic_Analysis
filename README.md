@@ -49,7 +49,7 @@ When the file is executed, a document opens straight away:
 
 The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background...
 
-I noticed a .mkv file i had earlier dismissed as a likely just a decoy video, turned out to be a RAR file that began launching multiple .dll
+While the process was running I noticed a .mkv file I had earlier dismissed as a likely just a decoy video, it turned out to be a RAR file that began launching multiple .dll's.
 
 
 ![Files Executing in Background](Images/zhen_mkv.png)
