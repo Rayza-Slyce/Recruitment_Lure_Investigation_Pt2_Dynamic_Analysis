@@ -1,7 +1,7 @@
-# Apex Logistics Recruitment Lure  
+# Linkedin Recruitment Lure  
 ## Part 2 – Dynamic Analysis & Payload Behaviour
 
-Date: 20th April 2026
+Date: 22nd April 2026
 
 ---
 
