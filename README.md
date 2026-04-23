@@ -215,6 +215,51 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 
 ---
 
+## IP Infrastructure Analysis
+
+### Telegram Infrastructure (149.154.167.99)
+
+Analysis of network traffic identified outbound connections to `149.154.167.99`, which resolves to Telegram infrastructure (ASN: AS62041 – Telegram Messenger Inc).
+
+- Legitimate service (Telegram Messenger network)
+- Located in the Netherlands
+- Likely used as a communication or signalling channel by the malware
+
+**Assessment:**
+This IP is not inherently malicious but is being leveraged as part of the malware’s communication flow, indicating potential abuse of a legitimate platform.
+
+---
+
+### Command & Control Server (172.86.89.235)
+
+Further investigation identified `172.86.89.235` as the primary suspicious host involved in payload delivery.
+
+- Hosting provider: RouterHosting LLC (Cloudzy)
+- Location: Dallas, Texas, US
+- Static VPS hostname: `235.89.86.172.static.cloudzy.com`
+- Active HTTP service observed
+
+**Observed behaviour:**
+- Responds to `GET /getPage?id=sunset`
+- Returns a secondary resource (`/links/sunset.txt`)
+- Serves encoded payload content consistent with staged malware delivery
+
+**Assessment:**
+This host is functioning as an active command-and-control (C2) or staging server, delivering encoded payloads to the infected system via scripted HTTP requests.
+
+---
+
+### Reporting
+
+Based on the confirmed malicious behaviour and supporting network evidence, this infrastructure will be reported to the relevant providers:
+
+- Telegram (abuse@telegram.org) – for potential platform abuse
+- RouterHosting / Cloudzy (abuse-reports@cloudzy.com) – for active malware hosting
+
+The report will include supporting evidence from network captures, HTTP requests, and payload analysis to assist with investigation and potential takedown.
+
+---
+
 ## Execution Flow
 
 ```mermaid
