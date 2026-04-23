@@ -50,7 +50,9 @@ When the file is executed, a document opens straight away:
 ![Decoy document opened on execution](Images/14_notepad_after_exe.png)
 
 
-The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background...
+The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background... However, the document was a 'Google Ads Playbook', not what the user would expect after clicking a link for 'Complete Information about the job and products'. This struck me as sloppy at first, likely just lazy reuse of the decoy document...
+
+But at that point of the attack, it didnt matter. Delivery of the payload had already begun silently in the background with no GUI, warning or confirmation check. It was completely invisible unless running procexp.
 
 While the process was running I noticed `zhen.mkv`, a file I had seen earlier but, at that point, I had assumed was just a decoy video file based on the extension.  
 However, it turned out to be a RAR archive, and once executed it began triggering the loading of multiple DLLs in the background.
