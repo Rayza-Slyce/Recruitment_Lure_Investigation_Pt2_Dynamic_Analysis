@@ -218,8 +218,6 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 ## Execution Flow
 
 ```mermaid
-:::writing{variant="standard" id="48291"}
-```mermaid
 flowchart TD
 
     subgraph S1[Execution]
