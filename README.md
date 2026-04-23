@@ -217,7 +217,9 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 
 ## Execution Flow
 
+```mermaid
 flowchart TD
+
     subgraph S1[Initial execution]
         A[User executes lure EXE]
         B[Decoy document opens]
@@ -235,7 +237,7 @@ flowchart TD
 
     subgraph S3[Persistence]
         G[Scheduled task created for persistence]
-        H[WinUpdate.bat written and used]
+        H[WinUpdate.bat written]
         F --> G
         F --> H
         G --> H
@@ -245,35 +247,36 @@ flowchart TD
         I[Scheduled task triggers execution]
         J[conhost.exe launches process]
         K[MpEng.exe process starts]
-        L[MpEng.exe is a disguised Python runtime]
+        L[MpEng.exe is disguised Python runtime]
         M[update.dll loaded as payload]
         N[Python modules execute logic]
         I --> J --> K --> L --> M --> N
     end
 
-    subgraph S5[Network Communication]
-        O[Outbound connection initiated]
-        P[DNS query for t.me]
-        Q[TLS handshake to Telegram]
+    subgraph S5[Network]
+        O[Outbound connection]
+        P[DNS query t.me]
+        Q[TLS connection to Telegram]
         R[HTTP request to 172.86.89.235]
-        S[/getPage?id=sunset endpoint hit]
-        T[Server returns link to sunset.txt]
+        S[getPage endpoint hit]
+        T[Returns sunset.txt link]
         U[sunset.txt retrieved]
         N --> O --> P --> Q
         N --> R --> S --> T --> U
     end
 
-    subgraph S6[Payload Delivery]
-        V[Encoded blob received]
+    subgraph S6[Payload]
+        V[Encoded blob]
         W[Base64 decoded]
         X[Decompressed payload]
-        Y[Final stage binary / code object]
+        Y[Final stage code]
         U --> V --> W --> X --> Y
     end
 
-    Z[System left with persistent compromise]
+    Z[Persistent compromise]
     N --> Z
     Y --> Z
+```
 
 ---
 
