@@ -217,64 +217,64 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 
 ## Execution Flow
 
-```mermaid
 flowchart TD
-
-    subgraph S1[Execution]
-        A[Lure EXE executed]
-        B[Decoy document shown]
-        C[Deju script runs]
+    subgraph S1[Initial execution]
+        A[User executes lure EXE]
+        B[Decoy document opens]
+        C[Deju batch script runs]
         A --> B
         A --> C
     end
 
     subgraph S2[Staging]
-        D[zhen.mkv extraction]
-        E[TAIWAN.pdf unlocked]
-        F[Payload files extracted]
-        G[Files written to WindowsApps]
-        C --> D --> E --> F --> G
+        D[zhen.mkv used as WinRAR CLI]
+        E[TAIWAN.pdf unlocked using embedded password]
+        F[Payload files written to WindowsApps path]
+        C --> D --> E --> F
     end
 
     subgraph S3[Persistence]
-        H[Scheduled task created]
-        I[WinUpdate.bat written]
+        G[Scheduled task created for persistence]
+        H[WinUpdate.bat written and used]
+        F --> G
+        F --> H
         G --> H
-        G --> I
-        H --> I
     end
 
-    subgraph S4[Local Execution]
-        J[Task triggers]
-        K[conhost.exe headless]
-        L[MpEng.exe launched]
-        M[update.dll loaded]
-        J --> K --> L --> M
+    subgraph S4[Execution]
+        I[Scheduled task triggers execution]
+        J[conhost.exe launches process]
+        K[MpEng.exe process starts]
+        L[MpEng.exe is a disguised Python runtime]
+        M[update.dll loaded as payload]
+        N[Python modules execute logic]
+        I --> J --> K --> L --> M --> N
     end
 
-    subgraph S5[Network Activity]
-        N[Outbound traffic]
-        O[Telegram contacted]
-        P[C2 getPage request]
-        Q[C2 returns link]
-        R[sunset.txt retrieved]
-        M --> N
-        N --> O
-        N --> P --> Q --> R
+    subgraph S5[Network Communication]
+        O[Outbound connection initiated]
+        P[DNS query for t.me]
+        Q[TLS handshake to Telegram]
+        R[HTTP request to 172.86.89.235]
+        S[/getPage?id=sunset endpoint hit]
+        T[Server returns link to sunset.txt]
+        U[sunset.txt retrieved]
+        N --> O --> P --> Q
+        N --> R --> S --> T --> U
     end
 
     subgraph S6[Payload Delivery]
-        S[Python loader]
-        T[Encoded blob]
-        U[Decoded payload]
-        V[Final binary]
-        R --> S --> T --> U --> V
+        V[Encoded blob received]
+        W[Base64 decoded]
+        X[Decompressed payload]
+        Y[Final stage binary / code object]
+        U --> V --> W --> X --> Y
     end
 
-    X[Persistent compromise]
-    M --> X
-    V --> X
-:::
+    Z[System left with persistent compromise]
+    N --> Z
+    Y --> Z
+
 ---
 
 ## What This Is
