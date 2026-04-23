@@ -9,7 +9,7 @@ Date: 23rd April 2026
 
 This part of the investigation focuses on what actually happens when 'Position Details and Compensation Policy For Emp.EXE' is executed in a controlled live enviroment.
 
-In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information i gathered in my static analysis, i knew this was more than a simple phishing attempt, but i was surprised how sophisticated this malware the more I pulled the thread.
+In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information i gathered in my static analysis, i knew this was more than a simple phishing attempt, but i was surprised how sophisticated this malware turned out to be the more I pulled the thread.
 
 After running it in a lab, it turned out to be a very stealthy, complex structure.
 
