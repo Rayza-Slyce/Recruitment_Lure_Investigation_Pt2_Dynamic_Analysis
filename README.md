@@ -9,18 +9,15 @@ Date: 22nd April 2026
 
 This part of the investigation focuses on what actually happens when 'Position Details and Compensation Policy For Emp.EXE' is executed in a controlled live enviroment.
 
-In the first write-up, I looked at how the file was delivered and what it looked like statically. Going into this, I thought I was dealing with something fairly simple, probably centred around one of the DLLs.
+In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information i gathered in my static analysis, i knew this was more than a simple phishing attempt, but i was surprised how sophisticated this malware the more I pulled the thread.
 
-After running it in a lab, it turned out to be a lot more layered than that.
+After running it in a lab, it turned out to be a very stealthy, complex structure.
 
 Instead of one obvious payload, this is a **multi-stage setup** using:
 
 - disguised files  
-- a batch script to control execution  
-- a password-protected archive  
+- a batch script to control execution - a password-protected archive  
 - and a bundled Python environment running under a fake system process name  
-
-
 
 ---
 
@@ -223,7 +220,7 @@ Analysis of network traffic identified outbound connections to `149.154.167.99`,
 
 - Legitimate service (Telegram Messenger network)
 - Located in the Netherlands
-- Likely used as a communication or signalling channel by the malware
+- Used as a communication or signalling channel by the malware
 
 **Assessment:**
 This IP is not inherently malicious but is being leveraged as part of the malware’s communication flow, indicating potential abuse of a legitimate platform.
@@ -326,11 +323,6 @@ flowchart TD
 ---
 
 ## What This Is
-
-
----
-
-## Potential Use
 
 
 ---
