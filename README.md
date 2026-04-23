@@ -1,7 +1,7 @@
 # Linkedin Recruitment Lure Investigation 
 ## Part 2 – Dynamic Analysis & Payload Behaviour
 
-Date: 22nd April 2026
+Date: 23rd April 2026
 
 ---
 
@@ -353,17 +353,6 @@ This host is functioning as an active command-and-control (C2) or staging server
 
 ---
 
-### Reporting
-
-Based on the confirmed malicious behaviour and supporting network evidence, this infrastructure will be reported to the relevant providers:
-
-- Telegram (abuse@telegram.org) – for potential platform abuse
-- RouterHosting / Cloudzy (abuse-reports@cloudzy.com) – for active malware hosting
-
-The report will include supporting evidence from network captures, HTTP requests, and payload analysis to assist with investigation and potential takedown.
-
----
-
 ## Execution Flow
 
 ```mermaid
@@ -469,6 +458,18 @@ Based on this analysis, the following indicators may be useful for detection or 
 - *f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739*
 
 ---
+
+### Reporting
+
+Based on the confirmed malicious behaviour and supporting network evidence, this infrastructure will be reported to the relevant providers:
+
+- Telegram (abuse@telegram.org) – for potential platform abuse
+- RouterHosting / Cloudzy (abuse-reports@cloudzy.com) – for active malware hosting
+
+The report will include supporting evidence from network captures, HTTP requests, and payload analysis to assist with investigation and potential takedown.
+
+---
+
 ## Final Thoughts
 
 
