@@ -29,13 +29,16 @@ At that point, my thinking was that the main activity would probably come from o
 
 That wasn’t completely wrong, but it didn’t explain everything.
 
-To get a clearer picture, I moved into a lab and looked at what actually happens when the file is run using:
+To get a clearer picture, I moved into a lab and looked at what actually happens when the file is run.
 
-- A Windows 10 VM
+## Tools Used
+
+- Windows 10 VM
 - Process Explorer   
 - Burp Suite
 - WireShark
-- A Kali Linux VM for file analysis
+- Kali Linux VM for file analysis
+- Cyberchef
 
 ---
 
