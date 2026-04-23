@@ -338,6 +338,8 @@ This IP is not inherently malicious but is being leveraged as part of the malwar
 
 ### Command & Control Server (172.86.89.235)
 
+![C2 Server](Images/Screenshot_20260423-170517~2.png)
+
 Further investigation identified `172.86.89.235` as the primary suspicious host involved in payload delivery.
 
 - Hosting provider: RouterHosting LLC (Cloudzy)
