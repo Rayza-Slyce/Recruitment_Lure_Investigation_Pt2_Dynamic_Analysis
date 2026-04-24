@@ -187,7 +187,7 @@ This confirms that the scheduled task is responsible for maintaining persistent,
 
 ---
 
-## Update DLL
+## Update.dll
 
 (need to look into this)
 
@@ -219,7 +219,9 @@ I needed to look deeper to identify whether there is command-and-control (C2) co
 
 I reverted to a pre-infection snapshot of my VM for a clean baseline, set wireshark to capture and opened the 'Position Details and Compensation Policy For Emp.EXE' again.
 
-Following execution, network activity was immediately observed. Within seconds, the system initiated multiple outbound connections, indicating automated behaviour rather than user-driven interaction.
+Following execution, network activity was immediately observed. Within seconds, the system initiated multiple outbound connections, the first of which was a connection to a Telegram IP. 
+
+![Telegram Traffic](Images/tcp_traffic_telegram) 
 
 ---
 
@@ -236,8 +238,7 @@ Following execution, network activity was immediately observed. Within seconds, 
   - infrastructure discovery
   - payload retrieval
 
-**Screenshot to include:**
-- Conversations view showing multiple external IPs and packet counts
+![Conversation Summary](Images/traffic-convo-summary.png)
 
 ---
 
@@ -254,10 +255,6 @@ Followed by:
 
 **Assessment:**
 This suggests use of Telegram infrastructure, likely for signalling, fallback communications, or operator interaction.
-
-**Screenshots to include:**
-- DNS query resolving `t.me`
-- TLS handshake showing Client Hello with SNI: `t.me`
 
 ---
 
@@ -324,10 +321,16 @@ This behaviour is consistent with:
 
 ## Analysis of Sunset.txt
 
-The response from /links/sunset.txt contained a large obfuscated blob.
+The response from /links/sunset.txt contained what looked like obsfucated Python and a large obfuscated blob.
 Initial inspection suggested Base64 encoding. 
+
+![sunset.txt contents](Images/Follow_stream_sunset_txt.png) 
+
 I used Cyberchef to decode it from Base64 but it was still unreadable. Using the Detect File Type operation, I saw it was bzip2, so I decompressed it. 
 It now showed as a deflated zlib file so I used zlib inflate.
+
+![Decoded Blob](Images/cyberchef.png)
+
 The output was still in the most part unreadable, but I noticed 'HELLO COMPILER'... The developer was trolling. 
 I saved the data file and used my terminal in Kali to pull the strings... 
 
@@ -378,69 +381,9 @@ This host is functioning as an active command-and-control (C2) or staging server
 
 ## Execution Flow
 
-```mermaid
-flowchart TD
+(will add mermaid when finished investigation)
 
-    subgraph S1[Initial execution]
-        A[User executes lure EXE]
-        B[Decoy document opens]
-        C[Deju batch script runs]
-        A --> B
-        A --> C
-    end
-
-    subgraph S2[Staging]
-        D[zhen.mkv used as WinRAR CLI]
-        E[TAIWAN.pdf unlocked using embedded password]
-        F[Payload files written to WindowsApps path]
-        C --> D --> E --> F
-    end
-
-    subgraph S3[Persistence]
-        G[Scheduled task created for persistence]
-        H[WinUpdate.bat written]
-        F --> G
-        F --> H
-        G --> H
-    end
-
-    subgraph S4[Execution]
-        I[Scheduled task triggers execution]
-        J[conhost.exe launches process]
-        K[MpEng.exe process starts]
-        L[MpEng.exe is disguised Python runtime]
-        M[update.dll loaded as payload]
-        N[Python modules execute logic]
-        I --> J --> K --> L --> M --> N
-    end
-
-    subgraph S5[Network]
-        O[Outbound connection]
-        P[DNS query t.me]
-        Q[TLS connection to Telegram]
-        R[HTTP request to 172.86.89.235]
-        S[getPage endpoint hit]
-        T[Returns sunset.txt link]
-        U[sunset.txt retrieved]
-        N --> O --> P --> Q
-        N --> R --> S --> T --> U
-    end
-
-    subgraph S6[Payload]
-        V[Encoded blob]
-        W[Base64 decoded]
-        X[Decompressed payload]
-        Y[Final stage code]
-        U --> V --> W --> X --> Y
-    end
-
-    Z[Persistent compromise]
-    N --> Z
-    Y --> Z
-```
----
-
-## What This Is
+## Malware Analysis Conclusion 
 
 (will update when finished investigation)
 
