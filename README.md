@@ -181,7 +181,7 @@ The use of `conhost.exe --headless` ensures that execution occurs without any vi
 
 The additional argument `sunset`(seen in Deju) suggests that execution may be controlled via parameters, potentially allowing different behaviours or modes.
 
-This confirms that the scheduled task is responsible for maintaining persistent, hidden execution of the payload.
+This suggests that the scheduled task is responsible for maintaining persistent, hidden execution of the payload.
 
 ---
 
