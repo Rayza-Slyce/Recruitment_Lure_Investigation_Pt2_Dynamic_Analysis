@@ -324,10 +324,12 @@ This behaviour is consistent with:
 - staged payload delivery systems  
 - evasive infrastructure design
 
-## 2nd Suspicious IP Identified
+## Second Suspicious IP Identified
 
-After delivery of the `/sunset.txt` payload, C2 communication was then made with IP 15.235.156.143 via port 56001. This seemed unusual and given the high volume of communication that remained persistent during 40 minutes of observation, encompassing multiple 'scheduled tasks', this is likely the primary C2 server.
+After delivery of the `/sunset.txt` payload, C2 communication was then made with IP 15.235.156.143 via port 56001. This seemed unusual and given the high volume of communication that remained persistent and consistent during 40 minutes of observation, encompassing multiple 'scheduled tasks', this is likely the primary C2 server.
+
 No further communication attempts were observed with other IP addresses during this window, just consistent, repeated communication with 15.235.156.143. 
+
 This suggests that the 'scheduled task' is in place for optional future amendments or instructions for the payload.
 
 ---
@@ -465,17 +467,19 @@ The host appears to function as a remote endpoint for encrypted communication, l
 
 ## Execution Flow
 
-(will add mermaid diagram when finished investigation)
+(will add mermaid diagram)
+
+---
 
 ## Malware Analysis Conclusion 
 
-(will update when finished investigation)
+(to be updated)
 
 ---
 
 ## Level of Impact
 
-(will update when finished investigation
+(to be updated)
 
 ---
 
@@ -506,16 +510,26 @@ Based on this analysis, the following indicators may be useful for detection or 
 - Batch script (`Deju`) orchestrating extraction and execution
 
 
-**Hash List** 
+**Hash List** (to be updated)
 
 # Primary Payload Zip Package
 
 *f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739*
 
-#
-  
+# Position Details and Compensation Policy For Emp. EXE
 
-(I need to hash the other important individual files and upload to VirusTotal and malwarebazaar)
+# Deju
+
+# TAIWAN.pdf
+
+# Zhen.mkv
+
+# Update.dll
+
+# MpEng.exe
+
+# Decoded sunset.txt
+
 ---
 
 ### Reporting
@@ -528,11 +542,13 @@ Based on the confirmed malicious behaviour and supporting network evidence, this
   
 The report included supporting evidence from network captures, HTTP requests, and payload analysis to assist with investigation and potential takedown.
 
+All hashed files have also been uploaded to VirusTotal and MalwareBazaar for public awareness.
+
 ---
 
 ## Final Thoughts
 
-(will update when finished)
+(to be updated)
 
 ---
 
