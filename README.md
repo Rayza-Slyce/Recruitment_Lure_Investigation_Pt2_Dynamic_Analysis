@@ -450,7 +450,7 @@ This host is functioning as an active command-and-control (C2) or staging server
 
 ### Persistent C2 Server (15.235.156.143)
 
-![Persistent C2](Images/27_C2.png)
+![Persistent C2](Images/27_C2_2.png)
 
 The IP is hosted by OVH in Singapore, within a reassigned VPS range. It appears to be host only, with no web server content. This type of infrastructure is commonly used due to its low cost and ease of provisioning.
 
