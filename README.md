@@ -62,10 +62,13 @@ However, it turned out to be a RAR archive, and once executed it began triggerin
 ![Files Executing in Background](Images/02_zhen_mkv.png)
 
 
+
 The process ended with a file named MpEng.exe, which at first glance looked like Microsoft Defender, but the company name of Python Software Foundation made it clear that wasn't the case. 
 
 
+
 ![Initial Process Explorer view after execution](Images/03_procexp_after_exe_2026-04-20_00-20.png)
+
 
 It became clear this process wasn’t actually Defender at all, but a Python-based runtime executing scripts in the background.
 
@@ -79,6 +82,7 @@ I went back to the extracted files and noticed something I’d missed earlier. T
 ![Archive structure showing hidden underscore folder](Images/04_payload_subfolder_structure.png)
 
 ![Files inside hidden underscore folder](Images/05_payload_hidden_components_in_underscore_folder.png)
+
 
 I’d already seen that `zhen.mkv` wasn’t what it appeared to be, so finding these files grouped together made it clear they weren’t random decoys, they were part of the actual execution chain.
 
@@ -219,11 +223,11 @@ Since no proxy-aware traffic was observed, further packet-level inspection was r
 
 ---
 
-## WireShark Analysis
+## Wireshark Analysis
 
 I needed to look deeper to identify whether there is command-and-control (C2) communication that isn't visible through the proxy.
 
-I reverted to a pre-infection snapshot of my VM for a clean baseline, set wireshark to capture and opened the 'Position Details and Compensation Policy For Emp.EXE' again.
+I reverted to a pre-infection snapshot of my VM for a clean baseline, set Wireshark to capture, and opened the `Position Details and Compensation Policy For Emp.EXE` again.
 
 Following execution, network activity was immediately observed. Within seconds, the system initiated multiple outbound connections, the first of which was a connection to a Telegram IP. 
 
@@ -233,15 +237,15 @@ Following execution, network activity was immediately observed. Within seconds, 
 
 ### Network Activity Summary 
 
-- Connections made to multiple external IP addresses
+- Connections made to multiple external IP addresses  
 - Mix of:
-  - TCP 
-  - DNS queries
-- Packets of data exchanged between host and external IP's
+  - TCP  
+  - DNS queries  
+- Packets of data exchanged between host and external IPs  
 - Behaviour consistent with:
-  - beaconing
-  - infrastructure discovery
-  - payload retrieval
+  - automated communication  
+  - payload retrieval  
+  - staged execution  
 
 ---
 
@@ -253,11 +257,11 @@ DNS query observed:
 
 Followed by:
 
-- TLS handshake (Client Hello → Server Hello)
-- Encrypted communication established
+- TLS handshake (Client Hello → Server Hello)  
+- Encrypted communication established  
 
 **Assessment:**
-This suggests use of Telegram infrastructure, likely for signalling, fallback communications, or operator interaction.
+This indicates early-stage communication with Telegram infrastructure. Given the timing (immediately after execution), this may be used for signalling, notification, or as part of a broader communication mechanism.
 
 ---
 
@@ -292,8 +296,8 @@ Returns:
 ![Get Sunset](Images/16_sunset_delivery.png)
 
 **Assessment:**
-- This endpoint acts as a tasking or redirect layer
-- Confirms a staged delivery mechanism
+- This endpoint acts as a tasking or redirect layer  
+- Confirms a staged delivery mechanism  
 
 ---
 
@@ -305,8 +309,8 @@ Second request observed:
 
 Response:
 
-- `Content-Type: text/plain`
-- Large encoded payload returned
+- `Content-Type: text/plain`  
+- Large encoded payload returned  
 
 This traffic confirms a **multi-stage C2 workflow**:
 
@@ -318,33 +322,58 @@ This traffic confirms a **multi-stage C2 workflow**:
 
 This behaviour is consistent with:
 
-- loader malware  
+- loader-style malware  
 - staged payload delivery systems  
-- evasive infrastructure design
+- evasion through delayed execution  
 
-## Second Suspicious IP Identified
+---
 
-After delivery of the `/sunset.txt` payload, C2 communication was then made with IP 15.235.156.143 via port 56001. 
+## Secondary C2 Communication (15.235.156.143)
+
+After initial payload retrieval from `172.86.89.235`, the system establishes a sustained connection to `15.235.156.143`.
+
+Unlike the initial request/response pattern, this connection persists over time, with continuous TLS traffic observed.
 
 ![Second C2](Images/17_second_c2.png) 
 
-This seemed unusual and given the high volume of communication that remained persistent and consistent during 40 minutes of observation, encompassing multiple 'scheduled tasks', this is likely the primary C2 server.
+The connection remained active throughout 40 minutes of observation, including multiple scheduled task intervals.
 
-![After 5 Mins](Images/18_after_5_mins.png)
-![After 10 Mins](Images/19_after_10_mins.png)
+![After 5 Mins](Images/18_after_5_mins.png)  
+![After 10 Mins](Images/19_after_10_mins.png)  
 ![After 35 Mins](Images/20_after_35_mins.png)
 
-No further communication attempts were observed with other IP addresses during this window, just consistent, repeated communication with 15.235.156.143. 
+No further significant outbound communication to new external IPs was observed during this period. Instead, the system maintained a consistent encrypted session with `15.235.156.143`.
 
-This suggests that the 'scheduled task' is in place for optional future amendments or instructions for the payload.
+This suggests a clear transition from:
+
+- initial payload delivery (`172.86.89.235`)  
+- to persistent command-and-control communication (`15.235.156.143`)  
+
+---
 
 ## Conversation Summary 
 
-This is the conversation summary after 40 mins of observation showing long duration of connection with IP 15.235.156.143
+The conversation summary after 40 minutes of observation shows a sustained connection with `15.235.156.143`, with continuous packet exchange over time.
 
 ![Conversation Summary](Images/21_traffic_summary_40min)
 
 ---
+
+### Overall Assessment
+
+The observed network behaviour demonstrates a structured execution flow:
+
+1. Immediate outbound communication following execution  
+2. Initial contact with Telegram infrastructure  
+3. Retrieval of staged payload from HTTP-based C2 (`172.86.89.235`)  
+4. Transition to persistent encrypted communication with a secondary host (`15.235.156.143`)  
+
+This pattern is consistent with a multi-stage malware architecture, where:
+
+- an initial server delivers payload or instructions  
+- a secondary server maintains ongoing command-and-control communication  
+
+The use of programmatic HTTP requests, obfuscated payload delivery, and sustained TLS traffic strongly supports the conclusion that the system establishes an active and persistent C2 channel following execution.
 
 ## Analysis of Sunset.txt
 
@@ -452,7 +481,9 @@ This host is functioning as an active command-and-control (C2) or staging server
 
 ![Persistent C2](Images/27_C2_2.png)
 
-The IP is hosted by OVH in Singapore, within a reassigned VPS range. It appears to be host only, with no web server content. This type of infrastructure is commonly used due to its low cost and ease of provisioning.
+The IP is hosted by OVH in Singapore within a reassigned VPS range, indicating rented infrastructure rather than a dedicated or enterprise system.
+
+Unlike the initial staging server (172.86.89.235), this host did not serve any visible web content and did not respond to HTTP requests on ports 80 or 443, suggesting it is not intended for general web access.
 
 A targeted port scan revealed:
 
@@ -461,21 +492,28 @@ A targeted port scan revealed:
 
 ![Open Port](Images/28_nmap_open_port.png)
 
-Attempts to connect over HTTP resulted in timeouts, confirming there is no public web service exposed.
+Attempts to interact over HTTP resulted in timeouts, reinforcing that this system is not operating as a traditional web server.
 
 Direct interaction with port 56001 using OpenSSL confirmed the presence of a TLS service:
 
 - Self-signed certificate
 - Randomised common name (`Pzyzvzapjmw`)
-- Extremely long validity period (to 2090)
+- Extremely long validity period (extending to 2090)
 
 ![Self Signed Certificate](Images/29_self-signed-cert.png)
 
-This is not consistent with legitimate web infrastructure and strongly suggests a custom encrypted service.
+These characteristics are not typical of legitimate services and are consistent with deliberately configured encrypted communication channels.
 
-When combined with prior Wireshark observations (repeated TLS connections initiated by the malware) this behaviour is consistent with a command-and-control (C2) channel.
+More importantly, extended Wireshark capture showed that after initial payload retrieval from 172.86.89.235, the infected system establishes and maintains a continuous TLS session with this host.
 
-The host appears to function as a remote endpoint for encrypted communication, likely used for tasking or data exchange.
+This behaviour differs from simple beaconing or one-off requests and instead indicates sustained communication over time.
+
+Taken together, this strongly suggests a separation of roles within the infrastructure:
+
+- `172.86.89.235` acting as a staging / payload delivery server  
+- `15.235.156.143` acting as a persistent command-and-control (C2) endpoint  
+
+The use of a non-standard port, custom TLS configuration, and long-lived encrypted session indicates this host is likely responsible for ongoing tasking, control, or data exchange between the infected system and the attacker.
 
 ---
 
