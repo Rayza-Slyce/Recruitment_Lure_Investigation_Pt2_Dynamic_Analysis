@@ -320,10 +320,10 @@ Using the XOR key identified in `update.dll` (`ditmechina`), I decoded the conte
 ![Support XOR Decode](Images/33_support_xor_decode.png)  
 
 
-The result was not immediately readable. Instead, it revealed what looked like obsfucated Python and a large obfuscated blob.
+The result was not immediately readable. Instead, it revealed what looked like obfuscated Python and a large obfuscated blob.
 Initial inspection suggested Base64 encoding. 
 
-I used Cyberchef to decode it from Base64 but it was still unreadable. Using the Detect File Type operation, I saw it was bzip2, so I decompressed it. 
+I used CyberChef to decode it from Base64 but it was still unreadable. Using the Detect File Type operation, I saw it was bzip2, so I decompressed it. 
 It now showed as a deflated zlib file so I used zlib inflate.
 
 
@@ -345,7 +345,7 @@ Although the output was not clean, string analysis showed several important indi
 
 
 This strongly suggests that the payload is not simple script content, but **compiled or serialised Python code**, designed to execute dynamically at runtime rather than exist in a readable format on disk.
-The inclusion of HELLO DECOMPILER appears to be a deliberate anti-analysis marker, suggesting the developer expected this layer to be inspected.
+The inclusion of 'HELLO DECOMPILER' appears to be a deliberate anti-analysis marker, suggesting the developer expected this layer to be inspected.
 
 The contained artefacts don't appear to be random. They suggest that the payload is structured to track or manage some form of runtime state, rather than simply executing a fixed script.
 
@@ -577,7 +577,7 @@ Initial inspection suggested Base64 encoding.
 
 I used Cyberchef to apply the same decoding techniques (Base64 → Bzip2 → Zlib) I had used for the 'support' blob.
 
-Again the output was still in the most part unreadable so I saved the data file and used my terminal in Kali to pull the strings... 
+Again the output was still in the most part unreadable so I saved the data file and used my terminal in Kali to pull the strings...
 
 
 ![sunset.txt strings](Images/24_payloadblob_strings.png)
