@@ -189,15 +189,111 @@ This suggests that the scheduled task is responsible for maintaining persistent,
 
 ---
 
-## Update.dll
+## Analysis of MpEng.exe
 
-(need to look into this)
+The file `MpEng.exe` initially appeared to be a legitimate Windows Defender process based on its name. However, a closer look showed that this was not the case.
+
+![MpEng Strings](Images/mpeng_python_strings.png)
+
+Basic inspection revealed:
+
+- PE32 executable (32-bit)
+- References to Python runtime components
+- Dependency on `python310.dll`
+- Multiple Microsoft C runtime libraries (`VCRUNTIME140.dll`, etc.)
+
+Notably, the following strings were identified:
+
+- `Py_Main`
+- `python310.dll`
+- `Python Software Foundation`
+
+**Assessment:**
+
+Despite its name, `MpEng.exe` is not a legitimate Defender binary. Instead, it appears to be a **Python-based executable wrapper**, likely packaged using a tool such as PyInstaller.
+
+This allows the attacker to:
+
+- Package Python scripts as standalone executables  
+- Avoid requiring Python to be installed on the victim system  
+- Execute more complex logic while appearing as a normal Windows process  
+
+The naming (`MpEng.exe`) is likely an attempt to blend in with legitimate system processes and avoid suspicion.
 
 ---
 
-## MpEng.exe
+## Analysis of update.dll
 
-(need to look into this)
+The file `update.dll` was initially assumed to be a standard DLL. However, this quickly proved to be misleading.
+
+![update.dll file type](Images/update_dll_filetype.png)
+
+Basic inspection showed:
+
+- File type: ASCII text  
+- No valid PE/DLL structure  
+- Contains readable Python code  
+
+This indicates the file is **not a real DLL**, but instead a Python script disguised with a `.dll` extension.
+
+---
+
+### Decryption Routine
+
+The script contains a simple XOR-based decryption routine:
+
+![XOR Decryption Function](Images/update_dll_xor_function.png)
+
+This function loops through the encrypted data and applies a repeating XOR key to recover the original payload.
+
+Key observations:
+
+- XOR key: `ditmechina`  
+- Target file: `support.ico`  
+- File is read from the same directory as the executable  
+
+---
+
+### Execution Mechanism
+
+The script dynamically constructs and executes Python code rather than calling it directly:
+
+![Exec Construction](Images/update_dll_exec.png)
+
+Once resolved, this effectively runs:
+
+- `exec(decrypted_payload)`
+
+This means the decrypted payload is executed directly in memory, without being written to disk.
+
+---
+
+### Behaviour Summary
+
+`update.dll` acts as a **loader stage** within the malware chain:
+
+1. Locates `support.ico`  
+2. Decrypts it using XOR (`ditmechina`)  
+3. Executes the result in memory  
+
+This technique provides:
+
+- Obfuscation (payload hidden in a non-obvious file)  
+- Evasion (no clear malicious code on disk until runtime)  
+- Flexibility (payload can be updated independently)  
+
+---
+
+### Overall Assessment
+
+This stage confirms the malware uses a **multi-layer execution chain**:
+
+- Disguised executable (`MpEng.exe`)  
+- Fake DLL loader (`update.dll`)  
+- Encrypted payload (`support.ico`)  
+- In-memory execution (`exec()`)  
+
+This is not a basic script or simple dropper. The structure suggests deliberate design to evade detection and complicate analysis.
 
 ---
 
@@ -570,17 +666,21 @@ Based on this analysis, the following indicators may be useful for detection or 
 
 **Position Details and Compensation Policy For Emp. EXE**
 
-**Deju**
+**Zhen.mkv**
 
 **TAIWAN.pdf**
 
-**Zhen.mkv**
+**Deju**
 
-**Update.dll**
+**sunset.txt**
 
 **MpEng.exe** 
 
-**Decoded sunset.txt**
+**update.dll**
+
+**support.ico**
+
+
 
 ---
 
