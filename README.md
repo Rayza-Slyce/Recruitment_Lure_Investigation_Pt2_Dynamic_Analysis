@@ -420,6 +420,7 @@ Followed by:
 - Encrypted communication established  
 
 **Assessment:**
+
 This indicates early-stage communication with Telegram infrastructure. Given the timing (immediately after execution), this may be used for signalling, notification, or as part of a broader communication mechanism.
 
 ---
@@ -457,6 +458,7 @@ Returns:
 
 
 **Assessment:**
+
 - This endpoint acts as a tasking or redirect layer  
 - Confirms a staged delivery mechanism  
 
@@ -718,7 +720,67 @@ The use of a non-standard port, custom TLS configuration, and long-lived encrypt
 
 ## Execution Flow
 
-(will add mermaid diagram)
+```mermaid
+flowchart TD
+    subgraph S1[Initial Execution]
+        A[Lure EXE executed]
+        B[Decoy document opens]
+        C[Deju script runs]
+        A --> B
+        A --> C
+    end
+
+    subgraph S2[Local Staging]
+        D[zhen.mkv runs]
+        E[TAIWAN.pdf extracted]
+        F[Python environment unpacked]
+        G[Files written to WindowsApps]
+        C --> D --> E --> F --> G
+    end
+
+    subgraph S3[Persistence]
+        H[Scheduled task created]
+        I[WinUpdate.bat runs every 10 mins]
+        G --> H --> I
+    end
+
+    subgraph S4[Local Payload Chain]
+        J[conhost.exe headless]
+        K[MpEng.exe Python runtime]
+        L[update.dll loader script]
+        M[support.ico decrypted]
+        N[Payload executed in memory]
+        I --> J --> K --> L --> M --> N
+    end
+
+    subgraph S5[Initial Network Activity]
+        O[Telegram contacted]
+        P[HTTP request to staging server]
+        Q[getPage?id=sunset]
+        R[sunset.txt retrieved]
+        N --> O
+        N --> P --> Q --> R
+    end
+
+    subgraph S6[Remote Payload Stage]
+        S[Obfuscated Python received]
+        T[Encoded blob decoded]
+        U[Compiled Python payload]
+        R --> S --> T --> U
+    end
+
+    subgraph S7[Persistent C2]
+        V[TLS connection established]
+        W[15.235.156.143:56001]
+        X[Long-lived communication]
+        U --> V --> W --> X
+    end
+
+    Y[Persistent multi-stage compromise]
+    N --> Y
+    X --> Y
+```
+
 
 ---
 
