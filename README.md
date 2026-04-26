@@ -1,45 +1,49 @@
 # Linkedin Recruitment Lure Investigation 
 ## Part 2 – Dynamic Analysis & Payload Behaviour
 
-Date: 25th April 2026
+Date: 26th April 2026
 
 ---
 
 ## Executive Summary
 
-This part of the investigation focuses on what actually happens when 'Position Details and Compensation Policy For Emp.EXE' is executed in a controlled live enviroment.
+This part of the investigation focuses on what actually happens when `Position Details and Compensation Policy For Emp.EXE` is executed in a controlled live environment.  
 
-In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information i gathered in my static analysis, i knew this was more than a simple phishing attempt, but i was surprised how sophisticated this malware turned out to be the more I pulled the thread.
+In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information I gathered in my static analysis, I knew this was more than a simple phishing attempt, but I was surprised how sophisticated this malware turned out to be the more I pulled the thread.  
 
-After running it in a lab, it turned out to be a very stealthy, complex structure.
+After running it in a lab, it turned out to be a very stealthy, complex structure.  
 
-Instead of one obvious payload, this is a **multi-stage setup** using:
+Instead of one obvious payload, this is a **multi-stage setup** using:  
 
 - disguised files  
-- a batch script to control execution - a password-protected archive  
-- and a bundled, complete Python environment running under a fake system process name
-- persistent C2 communication 
+- a batch script to control execution  
+- a password-protected archive  
+- a bundled, complete Python environment running under a fake system process name  
+- persistent C2 communication  
 
 ---
 
-## Introduction
+## Introduction  
 
-In my initial investigation into this Linkedin recruitment lure, I focused on the delivery chain and file structure without executing the payload.
+In my initial investigation into this LinkedIn recruitment lure, I focused on the delivery chain and file structure without executing the payload.  
 
-At that point, my thinking was that the main activity would probably come from one of the DLLs in the package, maybe through sideloading.
+At that point, my thinking was that the main activity would probably come from one of the DLLs in the package, maybe through sideloading.  
 
-That wasn’t completely wrong, but it didn’t explain everything.
+That wasn’t completely wrong, but it didn’t explain everything.  
 
-To get a clearer picture, I moved into a lab and looked at what actually happens when the file is run.
+To get a clearer picture, I moved into a lab and looked at what actually happens when the file is run.  
 
-## Tools Used
+---
 
-- Windows 10 VM
-- Process Explorer   
-- Burp Suite
-- WireShark
-- Kali Linux VM for file analysis
-- Cyberchef
+## Tools Used  
+
+- Windows 10 VM  
+- Process Explorer  
+- Burp Suite  
+- Wireshark  
+- Kali Linux VM for file analysis  
+- CyberChef  
+
 
 ---
 
@@ -292,7 +296,46 @@ This is not a basic script or simple dropper. The structure suggests deliberate 
 
 ## Analysis of Support.ico
 
-(needs to be updated, bear in mind that in the flow of the write up, sunset hasnt been discovered yet, i want to write it as if i found this first - which i probably shoul have - comparisons with sunset payload can be made in the sunset section)
+At this stage, I had identified that `update.dll` was not a real DLL, but a Python-based loader responsible for decrypting and executing another file: `support.ico`.  
+
+At first glance, `support.ico` appears to be a harmless icon file. However, given how it was being used in the execution chain, it was clear this was another attempt to disguise part of the payload.  
+
+Using the XOR key identified in `update.dll` (`ditmechina`), I decoded the contents of `support.ico` using CyberChef.  
+
+![Support XOR Decode](Images/33_support_xor_decode.png)  
+
+The result was not immediately readable. Instead, it revealed what looked like obsfucated Python and a large obfuscated blob.
+Initial inspection suggested Base64 encoding. 
+
+I used Cyberchef to decode it from Base64 but it was still unreadable. Using the Detect File Type operation, I saw it was bzip2, so I decompressed it. 
+It now showed as a deflated zlib file so I used zlib inflate.
+
+![Support Blob Decode](Images/36_cyberchef_support_blob.png)
+
+Although the output was not clean, string analysis showed several important indicators:  
+
+- `<lambda>` functions  
+- dynamic execution patterns (`getattr`, `map`, `chr`)
+- `active_domain`
+- `active_domain_file`
+- `index`
+- `environ`
+- `HELLO DECOMPILER`
+
+
+![Support Blob Decode](Images/37_support_blob_strings.png)
+
+
+This strongly suggests that the payload is not simple script content, but **compiled or serialised Python code**, designed to execute dynamically at runtime rather than exist in a readable format on disk.
+The inclusion of `HELLO DECOMPILER` suggests the dev is trolling, they know decoding has gone as far as it can with full decompilation of the obsfucated Python code. 
+
+The contained artefacts don't appear to be random. They suggest that the payload is structured to track or manage some form of runtime state, rather than simply executing a fixed script.
+
+In particular, the presence of `active_domain` stood out. While no clear domain or IP address was visible at this stage, the naming strongly implies that the code may be designed to select or maintain a currently “active” endpoint, potentially from a list or external source.
+
+Combined with the heavy use of dynamic execution (getattr, map, chr, <lambda>), this suggests the payload is not static, but instead built to adapt its behaviour at runtime, making analysis significantly more difficult.
+
+At this point in the investigation, it wasn’t yet clear how this functionality was used, but it indicated that the payload likely contained more complex logic than a simple one-stage script, and warranted further investigation at the network level.
 
 ---
 
