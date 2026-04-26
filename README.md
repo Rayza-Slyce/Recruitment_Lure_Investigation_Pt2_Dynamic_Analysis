@@ -193,7 +193,7 @@ This suggests that the scheduled task is responsible for maintaining persistent,
 
 The file `MpEng.exe` initially appeared to be a legitimate Windows Defender process based on its name. However, a closer look showed that this was not the case.
 
-![MpEng Strings](Images/mpeng_python_strings.png)
+![MpEng Strings](Images/30_mpeng_python_strings.png)
 
 Basic inspection revealed:
 
@@ -226,7 +226,7 @@ The naming (`MpEng.exe`) is likely an attempt to blend in with legitimate system
 
 The file `update.dll` was initially assumed to be a standard DLL. However, this quickly proved to be misleading.
 
-![update.dll file type](Images/update_dll_filetype.png)
+![update.dll file type](Images/31_update_dll_filetype.png)
 
 Basic inspection showed:
 
