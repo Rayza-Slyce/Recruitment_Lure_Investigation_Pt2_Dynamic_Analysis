@@ -882,27 +882,43 @@ Based on this analysis, the following indicators may be useful for detection or 
 - Batch script (`Deju`) orchestrating extraction and execution
 
 
-## Hash List (to be updated)
+## Hash List
 
-**Primary Payload Zip Package**
 
-*f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739*
+### Primary Payload
 
-**Position Details and Compensation Policy For Emp. EXE**
+* **Dropbox Payload Zip Package**
+  `SHA256:*f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739*`
 
-**Zhen.mkv**
+* **Position Details and Compensation Policy For Emp. EXE**
+  `SHA256: <hash>`
 
-**TAIWAN.pdf**
+* **zhen.mkv**
+  `SHA256: <hash>`
 
-**Deju**
+* **TAIWAN.pdf**
+  `SHA256: <hash>`
 
-**sunset.txt**
+* **Deju**
+  `SHA256: <hash>`
 
-**MpEng.exe** 
 
-**update.dll**
+### Dropped Components
 
-**support.ico**
+* **MpEng.exe**
+  `SHA256: <hash>`
+
+* **update.dll**
+  `SHA256: <hash>`
+
+* **support.ico**
+  `SHA256: <hash>`
+
+
+### Network Payload
+
+* **sunset.txt**
+  `SHA256: <hash>`
 
 
 
