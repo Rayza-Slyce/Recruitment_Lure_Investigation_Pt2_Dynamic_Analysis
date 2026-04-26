@@ -290,6 +290,10 @@ This is not a basic script or simple dropper. The structure suggests deliberate 
 
 ---
 
+## Analysis of Support.ico
+
+(needs to be updated, bear in mind that in the flow of the write up, sunset hasnt been discovered yet, i want to write it as if i found this first - which i probably shoul have - comparisons with sunset payload can be made in the sunset section)
+
 ## Network Activity (Burp)
 
 Initial network monitoring was conducted using Burp Suite with traffic proxied from the analysis VM.
