@@ -589,7 +589,7 @@ Direct interaction with port 56001 using OpenSSL confirmed the presence of a TLS
 - Randomised common name (`Pzyzvzapjmw`)
 - Extremely long validity period (extending to 2090)
 -
-![Self Signed Certificate](Images/29_self_signedcert.png)
+![Self Signed Certificate](Images/29_self_signed_cert.png)
 
 These characteristics are not typical of legitimate services and are consistent with deliberately configured encrypted communication channels.
 
