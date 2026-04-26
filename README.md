@@ -451,7 +451,7 @@ Server response:
 
 Returns:
 
-    http://172.86.89.235/links/sunset.txt
+    hxxp[://]172[.]86[.]89[.]235/links/sunset[.]txt
 
 
 ![Get Sunset](Images/16_sunset_delivery.png)
@@ -888,37 +888,41 @@ Based on this analysis, the following indicators may be useful for detection or 
 ### Primary Payload
 
 * **Dropbox Payload Zip Package**
-  `SHA256:*f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739*`
+  `SHA256: f689830f201ed1612bfda4bb48e9dfba4bde9d2c4abc724f6e9f95060797e739`
 
 * **Position Details and Compensation Policy For Emp. EXE**
-  `SHA256: <hash>`
+  `SHA256: 59dbc225207fb303c9eccc7b962c82ae212f5d302703d3154178b8afceeccd3c`
 
 * **zhen.mkv**
-  `SHA256: <hash>`
+  `SHA256: bdbe2bde697c45e02902f19415d7af07dc871f30a3ac84fb552657aeddc38714`
 
 * **TAIWAN.pdf**
-  `SHA256: <hash>`
+  `SHA256: 319f354617ac4c1fd0ab4eed12ac762436439bef2d8bc65a4517fb4b4dd0a06f`
 
 * **Deju**
-  `SHA256: <hash>`
+  `SHA256: 969c43c279517b106abaf5002613f950cff63aae6b74c7b3261e8cfc0b153dc0`
 
 
 ### Dropped Components
 
 * **MpEng.exe**
-  `SHA256: <hash>`
+  `SHA256: ddd49d119c318e41ab21cdaa0d938987880dba167491e7c47ce2708a1f9883cd`
 
 * **update.dll**
-  `SHA256: <hash>`
+  `SHA256: 0797e1cc05267f2a9e14236b0730bcd63da1c73cf6e0a842ebea9732fb8955c3`
 
 * **support.ico**
-  `SHA256: <hash>`
+  `SHA256: 51743a64b0335e02e9098f4daae063e0cd345962a7b351ef7846d7ab90385ddb`
 
 
 ### Network Payload
 
 * **sunset.txt**
-  `SHA256: <hash>`
+  Retrieved via /links/sunset.txt during execution,the payload was not written to disk during execution and was instead handled     in memory by the runtime
+  The full response body (including Python wrapper and encoded payload) was captured and preserved for analysis:
+  
+* **sunset_payload.txt**
+  `SHA256: 0dd45d76181a5eb83d9d2e116eeb498a387f567c3ec023eab338a6ff5a6c8466`
 
 
 
