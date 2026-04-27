@@ -1,4 +1,4 @@
-# Linkedin Recruitment Lure Investigation 
+# LinkedIn Recruitment Lure Investigation 
 ## Part 2 – Dynamic Analysis & Payload Behaviour
 
 Date: 26th April 2026
@@ -9,7 +9,7 @@ Date: 26th April 2026
 
 This part of the investigation focuses on what actually happens when `Position Details and Compensation Policy For Emp.EXE` is executed in a controlled live environment.  
 
-In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information I gathered in my static analysis, I knew this was more than a simple phishing attempt, but I was surprised how sophisticated this malware turned out to be the more I pulled the thread.  
+In the first write-up, I looked at how the file was delivered and what it looked like statically. From the information I gathered in my static analysis, I knew this was more than a simple phishing attempt, but I was surprised by how sophisticated this malware turned out to be the more I pulled the thread.  
 
 After running it in a lab, it turned out to be a very stealthy, complex structure.  
 
@@ -57,7 +57,7 @@ When the file is executed, a document opens straight away:
 
 The aim of this document is to convince the user they have opened a legitimate document and distract them from what is going on in the background... However, the document was a 'Google Ads Playbook', not what the user would expect after clicking a link for 'Complete Information about the job and products'. This struck me as sloppy at first, likely just lazy reuse of the decoy document...
 
-But at that point of the attack, it didnt matter. Delivery of the payload had already begun silently in the background with no GUI, warning or confirmation check. It was completely invisible unless running procexp.
+But at that point of the attack, it didn't matter. Delivery of the payload had already begun silently in the background with no GUI, warning or confirmation check. It was completely invisible unless running procexp.
 
 While the process was running I noticed `zhen.mkv`, a file I had seen earlier but, at that point, I had assumed was just a decoy video file based on the extension.  
 However, it turned out to be a RAR archive, and once executed it began triggering the loading of multiple DLLs in the background.
@@ -96,7 +96,7 @@ I’d already seen that `zhen.mkv` wasn’t what it appeared to be, so finding t
 
 ## File Types
 
-Checking the actual file types revealed that that these also did not match their extensions:
+Checking the actual file types revealed that these also did not match their extensions:
 
 
 ![File type identification showing disguised components](Images/06_file_type_identification_disguised_components.png)
@@ -147,7 +147,7 @@ This ties everything together, Deju isn’t just another file in the archive, it
 
 ---
 
-I used the password to unpack Taiwan.pdf
+I used the password to unpack TAIWAN.pdf.
 It contains a large number of files rather than one obvious payload.
 
 
@@ -166,7 +166,7 @@ Those files were:
 
 ---
 
-At this point, it appears there is no single payload, instead multiple staged components deliver it, executed by `MpEng` which masquerades as Windows Defender while running a Python-based enviroment. 
+At this point, it appears there is no single payload, instead multiple staged components deliver it, executed by `MpEng` which masquerades as Windows Defender while running a Python-based environment. 
 
 
 ![Fake Defender Python runtime in Process Explorer](Images/12_fake_defender_python_runtime.png)
@@ -195,7 +195,7 @@ The use of `conhost.exe --headless` ensures that execution occurs without any vi
 
 `MpEng.exe`, previously identified as a disguised Python runtime, is used to execute `update.dll`, which likely contains the core payload logic.
 
-The additional argument `sunset`(seen in Deju) suggests that execution may be controlled via parameters, potentially allowing different behaviours or modes.
+The additional argument `sunset` (seen in Deju) suggests that execution may be controlled via parameters, potentially allowing different behaviours or modes.
 
 This suggests that the scheduled task is responsible for maintaining persistent, hidden execution of the payload.
 
@@ -373,6 +373,7 @@ No proxy-aware HTTP/HTTPS traffic attributable to the payload was observed durin
 The limited traffic captured appeared consistent with standard Windows behaviour, including SmartScreen and trust validation requests to Microsoft domains such as:
 
 `checkappexec.microsoft.com`
+and
 `ctldl.windowsupdate.com`
 
 No evidence of command-and-control (C2) communication or suspicious outbound HTTP/HTTPS requests was identified within the proxy-monitored traffic.
@@ -522,7 +523,7 @@ This suggests a clear transition from:
 
 ## Conversation Summary 
 
-Extended packet capture over a 40-minute period revealed a consistent and sustained communication pattern between the infected system and 15.235.156.143
+Extended packet capture over a 40-minute period revealed a consistent and sustained communication pattern between the infected system and 15.235.156.143.
 
 
 ![Conversation Summary](Images/21_traffic_summary_40min.png) 
@@ -568,16 +569,16 @@ The use of programmatic HTTP requests, obfuscated payload delivery, and sustaine
 
 ## Analysis of Sunset.txt
 
-The response from /links/sunset.txt contained more obfuscated Python and another large obfuscated blob like i had seen in `support.ico`.
+The response from /links/sunset.txt contained more obfuscated Python and another large obfuscated blob like I had seen in `support.ico`.
 Initial inspection suggested Base64 encoding. 
 
 
 ![sunset.txt contents](Images/22_get_sunset_request.png) 
 
 
-I used Cyberchef to apply the same decoding techniques (Base64 → Bzip2 → Zlib) I had used for the 'support' blob.
+I used CyberChef to apply the same decoding techniques (Base64 → Bzip2 → Zlib) I had used for the 'support' blob.
 
-Again the output was still in the most part unreadable so I saved the data file and used my terminal in Kali to pull the strings...
+Again the output was still mostly unreadable so I saved the data file and used my terminal in Kali to pull the strings...
 
 
 ![sunset.txt strings](Images/24_payloadblob_strings.png)
@@ -918,13 +919,11 @@ Based on this analysis, the following indicators may be useful for detection or 
 ### Network Payload
 
 * **sunset.txt**
-  Retrieved via /links/sunset.txt during execution,the payload was not written to disk during execution and was instead handled     in memory by the runtime
-  The full response body (including Python wrapper and encoded payload) was captured and preserved for analysis:
+  Retrieved via /links/sunset.txt during execution. The payload was not written to disk during execution and was instead handled    in memory by the runtime
+  The full response body, including Python wrapper and encoded payload, was captured and preserved for analysis.
   
 * **sunset_payload.txt**
   `SHA256: 0dd45d76181a5eb83d9d2e116eeb498a387f567c3ec023eab338a6ff5a6c8466`
-
-
 
 ---
 
@@ -932,8 +931,8 @@ Based on this analysis, the following indicators may be useful for detection or 
 
 Based on the confirmed malicious behaviour and supporting network evidence, this infrastructure was reported to the relevant providers:
 
-- Telegram (abuse@telegram.org) – for potential platform abuse
-- RouterHosting / Cloudzy (abuse-reports@cloudzy.com) – for active malware hosting
+- Telegram (abuse@telegram.org) - for potential platform abuse
+- RouterHosting / Cloudzy (abuse-reports@cloudzy.com) - for active malware hosting
 - OVH (noc@ovh.net) - for active malware hosting
   
 The report included supporting evidence from network captures, HTTP requests, and payload analysis to assist with investigation and potential takedown.
